@@ -7,12 +7,14 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
-
+cdw = -0.8
+eta = 0.002
+path = 'D:/phd_projects/NTU/exciton_NTU/6-fold-DOS/separate_cosine_terms/data_y_edge_eta_0.002/'
 nx = 80
 ny = 6
 interp = 'bilinear'
-mu = 0.1
-data1 = np.loadtxt(f'unitcell_avg_ldos_data_sem_yedge_2pi6_{mu}.dat')
+mu = -0.23
+data1 = np.loadtxt(f'unitcell_avg_ldos_data_sem_yedge_2pi6_{mu}_eta_{eta}_cdw{cdw}.dat')
 layer = int(nx/4)
 plotting_layer = int(nx/4)
 
@@ -27,7 +29,7 @@ plotting_layer = int(nx/4)
 #     if data1[j, 0] == en2:
 #         e2_num = j
 
-en_line = -30
+en_line = 0
 for j in range(len(data1)):
     if data1[j, 0] == en_line:
         eline_num = j
@@ -65,7 +67,7 @@ for i in range(plotting_layer, 0, -1):
 # print(new_data)
 # output data file
 info = 'unit_cell     layer   ldos'
-np.savetxt(f"sum_all_density_data_x_edge_py_file_OP_sem_yedge_2pi6_{mu}.dat", new_data, header=info, fmt="%10.6f")
+np.savetxt(f"{path}Topographic_DOS_{en_line}meV.dat", new_data, header=info, fmt="%10.6f")
 
 colors = ['navy', 'blue', 'red', '#FFFF14']
 cmap_name = 'my_list'
@@ -78,7 +80,7 @@ fig = plt.figure()
 ax = fig.add_subplot(121)
 
 
-x, y, z = np.loadtxt(f'sum_all_density_data_x_edge_py_file_OP_sem_yedge_2pi6_{mu}.dat', skiprows=1, unpack=True)
+x, y, z = np.loadtxt(f'{path}Topographic_DOS_{en_line}meV.dat', skiprows=1, unpack=True)
 z = z.reshape(plotting_layer, ny).T
 fliped_z = np.flip(z)
 im=ax.pcolormesh(fliped_z,shading='gouraud')
@@ -109,9 +111,9 @@ dos_line_data=np.array(dos_line_data).T
 ax2.set_xlabel("X (a)",fontsize=14)
 ax2.set_ylabel("DOS",fontsize=14)
 ax2.set_title("DOS along X direction")
-plt.savefig(f"topographic_DOS_{en_line}meV.png", dpi=600)
-np.savetxt(f"topographic_DOS_{en_line}meV.dat", new_data, header=info, fmt="%10.6f")
-np.savetxt(f"DOS_line_data_{en_line}meV.dat", dos_line_data, fmt="%10.6f")
+plt.savefig(f"{path}topographic_DOS_{en_line}meV.png", dpi=600)
+# np.savetxt(f"{path}topographic_DOS_{en_line}meV.dat", new_data, header=info, fmt="%10.6f")
+np.savetxt(f"{path}DOS_line_data_{en_line}meV.dat", dos_line_data, fmt="%10.6f")
 # plt.savefig(f"topo_ldos_plot_{en_line}.png", dpi=600)
 plt.show()
 
