@@ -8,8 +8,12 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
 interp = 'bilinear'
-mu = 0.1
-data1 = np.loadtxt(f'unitcell_avg_ldos_data_sm_2pi6_mu{mu}.dat')
+cdw = -0.65
+eta = 0.003
+mu = -0.23
+save_path = f'D:/phd_projects/NTU/exciton_NTU/6-fold-DOS/separate_cosine_terms/data_xedge_eta_{eta}/'
+
+data1 = np.loadtxt(f'unitcell_avg_ldos_data_sm_2pi6_mu{mu}_eta_{eta}_cdw{cdw}.dat')
 
 nx = 6
 ny = 40
@@ -27,7 +31,7 @@ plotting_layer = int(ny/2)
 #     if data1[j, 0] == en2:
 #         e2_num = j
 
-en_line = -60
+en_line = -30
 for j in range(len(data1)):
     if data1[j, 0] == en_line:
         eline_num = j
@@ -53,14 +57,14 @@ new_data = []
 for i in range(plotting_layer, 0, -1):
     for j in range(0, len(data[0])):
         new_data.append([j + 1, i, data[i - 1, j]])
-info = 'X(a)     Y(a)   ldos'
-np.savetxt(f"sum_all_density_data_x_edge_py_file_OP_sm_2pi6_mu{mu}_en_{en_line}.dat", new_data, header=info, fmt="%10.6f")
+info = 'X(a)     Y(b)     DOS'
+np.savetxt(f"{save_path}Topographic_DOS_data_E_{en_line}.dat", new_data, header=info, fmt="%10.6f")
 # colors = ['navy', 'blue', 'red', '#FFFF14']
-colors = ['navy', 'dodgerblue', 'red','white']
-cmap_name = 'my_list'
-cm = LinearSegmentedColormap.from_list(
-    cmap_name, colors, N=1000)
-norm = mpl.colors.Normalize(vmin=np.min(data), vmax=np.max(data))
+# colors = ['navy', 'dodgerblue', 'red','white']
+# cmap_name = 'my_list'
+# cm = LinearSegmentedColormap.from_list(
+#     cmap_name, colors, N=1000)
+# norm = mpl.colors.Normalize(vmin=np.min(data), vmax=np.max(data))
 
 plt.rcParams["figure.figsize"] = [12, 4]
 plt.rcParams["figure.autolayout"] = True
@@ -72,7 +76,7 @@ ax1 = fig.add_subplot(131)
 xtic = np.linspace(1,nx,nx)
 ytic = np.round(np.array([i for i in range(1,plotting_layer,int(plotting_layer/5))]))
 
-x, y, z = np.loadtxt(f'sum_all_density_data_x_edge_py_file_OP_sm_2pi6_mu{mu}_en_{en_line}.dat', skiprows=1, unpack=True)
+x, y, z = np.loadtxt(f'{save_path}Topographic_DOS_data_E_{en_line}.dat', skiprows=1, unpack=True)
 N = int(nx)
 z = z.reshape(plotting_layer, N)
 ax1.set_xlabel('X(a)', fontsize=18)
@@ -144,7 +148,7 @@ ax3.set_title("line cut of DOS across X edge\n", fontsize=15)
 ax3.tick_params(direction='in', length=5, width=1, colors='k', bottom=True,
                 top=False, left=True, right=False)
 # plt.savefig(f"x_edge_DOS_across_line_cut_{en_line}.png",dpi = 300)
-plt.savefig(f"x_edge_{en_line}.png",dpi = 300)
+plt.savefig(f"{save_path}x_edge_{en_line}.png",dpi = 300)
 plt.show()
 
 
@@ -154,12 +158,12 @@ plt.show()
 
 
 line_cut = np.array([x_list,z[plotting_layer-1]]).T
-np.savetxt(f"x_edge_DOS_along_edge{en_line}.dat",line_cut, fmt="%10.6f")
+np.savetxt(f"{save_path}x_edge_DOS_along_edge{en_line}.dat",line_cut, fmt="%10.6f")
 
 line_cut = np.array([y_list,np.flip(z.T[0]),np.flip(z.T[1]),np.flip(z.T[2]),np.flip(z.T[3]),np.flip(z.T[4]),np.flip(z.T[5])]).T
-np.savetxt(f"x_edge_DOS_across_edge{en_line}.dat",line_cut, fmt="%10.6f")
+np.savetxt(f"{save_path}x_edge_DOS_across_edge{en_line}.dat",line_cut, fmt="%10.6f")
 #%%
-"""CDW order parameter"""
+# """CDW order parameter"""
 
 # # define function for custom aspect ratio
 # def forceaspect(ax, aspect=1):
@@ -199,45 +203,45 @@ np.savetxt(f"x_edge_DOS_across_edge{en_line}.dat",line_cut, fmt="%10.6f")
 # plt.colorbar()
 # plt.show()
 
-"""CDW order parameter"""
+# """CDW order parameter"""
 
-# define function for custom aspect ratio
-# def forceaspect(ax, aspect=1):
-#     im = ax.get_images()
-#     extent = im[0].get_extent()
-#     ax.set_aspect(abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect)
-# fig = plt.figure()
-# ax = fig.add_subplot(111)
-# colors = ['navy', 'blue', 'red', '#FFFF14']
-colors = ['navy', 'dodgerblue', 'red','white']
-# colors = ['r','y']
-cmap_name = 'my_list'
-cm = LinearSegmentedColormap.from_list(
-    cmap_name, colors, N=1000)
-norm = mpl.colors.Normalize(vmin=np.min(data), vmax=np.max(data))
+# # define function for custom aspect ratio
+# # def forceaspect(ax, aspect=1):
+# #     im = ax.get_images()
+# #     extent = im[0].get_extent()
+# #     ax.set_aspect(abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect)
+# # fig = plt.figure()
+# # ax = fig.add_subplot(111)
+# # colors = ['navy', 'blue', 'red', '#FFFF14']
+# colors = ['navy', 'dodgerblue', 'red','white']
+# # colors = ['r','y']
+# cmap_name = 'my_list'
+# cm = LinearSegmentedColormap.from_list(
+#     cmap_name, colors, N=1000)
+# norm = mpl.colors.Normalize(vmin=np.min(data), vmax=np.max(data))
 
-plt.rcParams["figure.figsize"] = [6, 5]
-plt.rcParams["figure.autolayout"] = True
+# plt.rcParams["figure.figsize"] = [6, 5]
+# plt.rcParams["figure.autolayout"] = True
 
-# den_data = np.loadtxt("density_data_semi_metallic.dat")
-den_data = np.loadtxt("WTe2_cdw_gap_data.dat")
-dd = den_data.reshape(int(len(den_data)/4),4)
-x_list = np.linspace(1,nx,nx) 
-y_list = np.linspace(1,ny,ny) 
-density_grid = (sum(dd.T)/4).reshape(ny,nx)
+# # den_data = np.loadtxt("density_data_semi_metallic.dat")
+# den_data = np.loadtxt("WTe2_cdw_gap_data.dat")
+# dd = den_data.reshape(int(len(den_data)/4),4)
+# x_list = np.linspace(1,nx,nx) 
+# y_list = np.linspace(1,ny,ny) 
+# density_grid = (sum(dd.T)/4).reshape(ny,nx)
 
-plt.imshow(density_grid, interpolation=interp,extent=(np.amin(x_list), np.amax(x_list), np.amin(y_list), np.amax(y_list)),
-            cmap=cm)
-# forceaspect(ax, aspect=1)
+# plt.imshow(density_grid, interpolation=interp,extent=(np.amin(x_list), np.amax(x_list), np.amin(y_list), np.amax(y_list)),
+#             cmap=cm)
+# # forceaspect(ax, aspect=1)
 
-plt.xlabel('X', fontsize=18)
-plt.ylabel('Y', fontsize=18)
-plt.xlim(1,6)
-plt.xticks(fontsize=18)
-plt.yticks(fontsize=18)
-plt.tick_params(direction='out', length=5, width=1, colors='k', bottom=True,
-                top=False, left=True, right=False)
-plt.colorbar()
-plt.show()
+# plt.xlabel('X', fontsize=18)
+# plt.ylabel('Y', fontsize=18)
+# plt.xlim(1,6)
+# plt.xticks(fontsize=18)
+# plt.yticks(fontsize=18)
+# plt.tick_params(direction='out', length=5, width=1, colors='k', bottom=True,
+#                 top=False, left=True, right=False)
+# plt.colorbar()
+# plt.show()
 
 
